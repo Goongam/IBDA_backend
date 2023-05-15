@@ -1,7 +1,12 @@
+const {login, verifyToken} = require('./auth');
+// const verifyToken = require('./auth');
+
 const express = require('express')
 const cors = require('cors');
 const helmet = require('helmet');
 const csp = require('helmet-csp');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 const app = express()
 const port = 5000
 
@@ -14,6 +19,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(bodyParser.json());
 
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
@@ -161,9 +167,21 @@ let clothes = [
     }
   });
   
+  app.post('/login', login);
+  app.post('/login2', (req, res)=>{
+    console.log(req.body);
+    
+  });
+
+app.get('/protected', verifyToken, (req, res) => {
+  res.json({ message: '인증 성공', user: req.user });
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 });
+
+
 
 /*
 fetch('http://localhost:5000/todos/1',{
