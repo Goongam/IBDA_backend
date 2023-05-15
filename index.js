@@ -168,10 +168,6 @@ let clothes = [
   });
   
   app.post('/login', login);
-  app.post('/login2', (req, res)=>{
-    console.log(req.body);
-    
-  });
 
 app.get('/protected', verifyToken, (req, res) => {
   res.json({ message: '인증 성공', user: req.user });

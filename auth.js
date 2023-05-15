@@ -1,24 +1,43 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-function authenticateUser(username, password) {
+let userList = [
+  {
+    name: '테스트계정1',
+    id: 'test1',
+    password: 'password1'
+  },
+  {
+    name: '테스트계정2',
+    id: 'test2',
+    password: 'password2'
+  }
+]
+
+
+function authenticateUser(id, password) {
     // 사용자 인증 로직 구현
-    if (username === 'test' && password === 'password') {
-      return true;
-    } else {
-      return false;
-    }
+
+    const findUser = userList.find((user)=>{
+      return user.id === id && user.password === password
+    })
+
+    return findUser;
   }
 
 function login(req, res){    
-    const { username, password } = req.body;
+    const { id, password } = req.body;
     console.log(req.body);
     console.log(process.env.EXPRESS_SECRET);
     
-    if (authenticateUser(username, password)) { 
-        //토큰발급
-      const token = jwt.sign({ username }, process.env.EXPRESS_SECRET);
-      res.json({ token });
+    const user = authenticateUser(id, password)
+    if (user) { 
+        //로그인 성공 및 토큰발급
+      const token = jwt.sign({name:user.name}, process.env.EXPRESS_SECRET,{
+        expiresIn: '15m', // 만료시간
+        issuer: '토큰발급자',
+    });
+      res.json({ token, user: user.name });
     } else {
       res.status(401).json({ error: '인증 실패' });
     }
@@ -36,7 +55,7 @@ function verifyToken(req, res, next) {
         if (err) {
         return res.status(401).json({ error: '인증 실패' });
         }
-        req.user = decoded.username;
+        req.user = decoded.name;
         next();
     });
 }
