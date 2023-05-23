@@ -32,84 +32,84 @@ app.use(helmet.contentSecurityPolicy({
 
 let clothes = [
     {
-      id: 1,
+      id: 0,
       image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
       name: "Blue T-shirt",
       price: 20.99,
       category: "T-shirts"
     },
     {
-      id: 2,
+      id: 1,
       image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
       name: "Black Jeans",
       price: 50.00,
       category: "Jeans"
     },
     {
-      id: 3,
+      id: 2,
       image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
       name: "Red Dress",
       price: 80.00,
       category: "Dresses"
     },
     {
-        id: 4,
+        id: 3,
         image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
         name: "Blue T-shirt",
         price: 20.99,
         category: "T-shirts"
+    },
+    {
+        id: 4,
+        image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
+        name: "Black Jeans",
+        price: 50.00,
+        category: "Jeans"
     },
     {
         id: 5,
-        image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
-        name: "Black Jeans",
-        price: 50.00,
-        category: "Jeans"
+        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
+        name: "Red Dress",
+        price: 80.00,
+        category: "Dresses"
     },
     {
         id: 6,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
-        name: "Red Dress",
-        price: 80.00,
-        category: "Dresses"
+        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
+        name: "Blue T-shirt",
+        price: 20.99,
+        category: "T-shirts"
     },
     {
         id: 7,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
-        name: "Blue T-shirt",
-        price: 20.99,
-        category: "T-shirts"
-    },
-    {
-        id: 8,
         image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
         name: "Black Jeans",
         price: 50.00,
         category: "Jeans"
     },
     {
-        id: 9,
+        id: 8,
         image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
         name: "Red Dress",
         price: 80.00,
         category: "Dresses"
     },
     {
-        id: 10,
+        id: 9,
         image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
         name: "Blue T-shirt",
         price: 20.99,
         category: "T-shirts"
     },
     {
-        id: 11,
+        id: 10,
         image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
         name: "Black Jeans",
         price: 50.00,
         category: "Jeans"
     },
     {
-        id: 12,
+        id: 11,
         image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
         name: "Red Dress",
         price: 80.00,
