@@ -21,17 +21,19 @@ function authenticateUser(id, password) {
     const findUser = userList.find((user)=>{
       return user.id === id && user.password === password
     })
-
+    
     return findUser;
   }
 
 function login(req, res){    
-    const { id, password } = req.body;
-    console.log(req.body);
-    console.log(process.env.EXPRESS_SECRET);
+    const { id, password} = req.body;
+    // console.log(req.body);
+    // console.log(process.env.EXPRESS_SECRET);
+    
     
     const user = authenticateUser(id, password)
     if (user) { 
+      console.log('id pass로 로그인');
         //로그인 성공 및 토큰발급
       const token = jwt.sign({name:user.name}, process.env.EXPRESS_SECRET,{
         expiresIn: '15m', // 만료시간
@@ -42,6 +44,27 @@ function login(req, res){
       res.status(401).json({ error: '인증 실패' });
     }
   }
+
+function loginTokenVerify(req, res, next){
+  const token = req.headers.authorization;
+  if(!token) {
+    next();
+    return;
+  }
+
+  jwt.verify(token, process.env.EXPRESS_SECRET, (err, decoded) => {
+    if (err) {
+      // return res.status(401).json({ error: '인증 실패' });
+      next();
+      return;
+    }
+    console.log('토큰으로 로그인');
+    
+    res.status(200).json({ token, user: decoded.name });
+    
+  });
+  return;
+}
 
 function verifyToken(req, res, next) {
     const token = req.headers.authorization;
@@ -61,7 +84,7 @@ function verifyToken(req, res, next) {
 }
 
 module.exports = {
-    login, verifyToken
+    login, verifyToken, loginTokenVerify
 }
 
 /*
@@ -83,5 +106,12 @@ fetch('http://localhost:5000/protected',{
 })
 
 */
+/* 토큰으로 로그인
 
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2ODQxMzQ1MTd9.ZhJJgnmsU52iUC22kUCZa82BhPmw4MYP7Ou9xDxRdWI
+fetch('http://localhost:5000/login',{
+    method:"POST",
+    headers:{'authorization':'tokenstring'
+    }
+})
+
+*/
