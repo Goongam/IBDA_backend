@@ -139,7 +139,7 @@ let clothes = [
     console.log(req.body);
   
     if (image && name && price && category) {
-      const newCloth = { id: clothes.length + 1, image, name, price, category };
+      const newCloth = { id: clothes.length, image, name, price, category };
       clothes.push(newCloth);
       res.json(newCloth);
     } else {
