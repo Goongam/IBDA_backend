@@ -134,7 +134,7 @@ let clothes = [
   });
   
   // POST /clothes - 새로운 옷 항목 추가
-  app.post('/clothes', (req, res) => {
+  app.post('/newclothes', (req, res) => {
     const { image, name, price, category } = req.body;
     console.log(req.body);
   
