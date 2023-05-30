@@ -167,6 +167,21 @@ let clothes = [
     }
   });
   
+  app.delete('/clothes/:id', (req, res)=>{
+    const id = Number(req.params.id);
+    const filteredClothes = clothes.filter(cloth => cloth.id !== id);
+    console.log('len',clothes.length);
+    console.log(filteredClothes.length);
+    
+    if(clothes.length != filteredClothes.length){
+      clothes = filteredClothes;
+      res.status(200).json({message:"삭제 성공"});
+    }else{
+      res.status(400).json({ error: "Cloth not found" });
+    }
+
+  })
+
   app.post('/login',loginTokenVerify, login);
 
 app.get('/protected', verifyToken, (req, res) => {
