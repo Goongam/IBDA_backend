@@ -1,4 +1,6 @@
 const {login, verifyToken, loginTokenVerify} = require('./auth');
+const {getAllProducts, insertClothes, getProduct, addProduct, deleteProduct, updateProduct} = require('./dbUtil');
+
 // const verifyToken = require('./auth');
 
 const express = require('express')
@@ -25,112 +27,41 @@ app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'", 'http://localhost:5000']
+        styleSrc: ["'self'", 'http://localhost:5000', 'http://localhost:5001', 'http://ibdabackend.iptime.org:5001']
     }
 }));
 
 
-let clothes = [
-    {
-      id: 0,
-      image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
-      name: "Blue T-shirt",
-      price: 20.99,
-      category: "T-shirts"
-    },
-    {
-      id: 1,
-      image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
-      name: "Black Jeans",
-      price: 50.00,
-      category: "Jeans"
-    },
-    {
-      id: 2,
-      image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
-      name: "Red Dress",
-      price: 80.00,
-      category: "Dresses"
-    },
-    {
-        id: 3,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
-        name: "Blue T-shirt",
-        price: 20.99,
-        category: "T-shirts"
-    },
-    {
-        id: 4,
-        image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
-        name: "Black Jeans",
-        price: 50.00,
-        category: "Jeans"
-    },
-    {
-        id: 5,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
-        name: "Red Dress",
-        price: 80.00,
-        category: "Dresses"
-    },
-    {
-        id: 6,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
-        name: "Blue T-shirt",
-        price: 20.99,
-        category: "T-shirts"
-    },
-    {
-        id: 7,
-        image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
-        name: "Black Jeans",
-        price: 50.00,
-        category: "Jeans"
-    },
-    {
-        id: 8,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
-        name: "Red Dress",
-        price: 80.00,
-        category: "Dresses"
-    },
-    {
-        id: 9,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg",
-        name: "Blue T-shirt",
-        price: 20.99,
-        category: "T-shirts"
-    },
-    {
-        id: 10,
-        image: "https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg",
-        name: "Black Jeans",
-        price: 50.00,
-        category: "Jeans"
-    },
-    {
-        id: 11,
-        image: "https://www.muji.com/wp-content/uploads/sites/12/2021/02/036.jpg",
-        name: "Red Dress",
-        price: 80.00,
-        category: "Dresses"
-    },
-  ];
+  app.post('/test', async (req,res)=>{
+
+    const { image, name, price, category } = req.body;
+    console.log(req.body);
   
+    if (image && name && price && category) {
+      const newCloth = { image, name, price, category };
+      
+      addProduct(newCloth)
+      .then(res.json({'data':'success'}))
+      .catch(res.json({'error':'db error'}));
+    }else{
+      res.status(400).json({ error: "Invalid data" });
+    }
+     
+    // return res.status(400).json({ error: "Invalid data" });
+  })
   // GET /clothes - 모든 옷 항목 반환
-  app.get('/clothes', (req, res) => {
-    res.json(clothes);
+  app.get('/clothes', async (req, res) => {
+    const resultRows = await getAllProducts();
+
+    res.json(resultRows);
   });
   
   // GET /clothes/:id - 특정 옷 항목 반환
   app.get('/clothes/:id', (req, res) => {
     const id = Number(req.params.id);
-    const cloth = clothes.find(cloth => cloth.id === id);
-    if (cloth) {
-      res.json(cloth);
-    } else {
-      res.status(404).json({ error: "Cloth not found" });
-    }
+    getProduct(id)
+    .then(resultRows => res.status(200).json(resultRows))
+    .catch((err) => res.status(404).json({ error: "Cloth not found" }))
   });
   
   // POST /clothes - 새로운 옷 항목 추가
@@ -139,10 +70,12 @@ let clothes = [
     console.log(req.body);
   
     if (image && name && price && category) {
-      const newCloth = { id: clothes.length, image, name, price, category };
-      clothes.push(newCloth);
-      res.json(newCloth);
-    } else {
+      const newCloth = { image, name, price, category };
+      
+      addProduct(newCloth)
+      .then(res.json({'data':'success'}))
+      .catch(res.json({'error':'db error'}));
+    }else{
       res.status(400).json({ error: "Invalid data" });
     }
   });
@@ -151,34 +84,19 @@ let clothes = [
   app.patch('/clothes/:id', (req, res) => {
     const id = Number(req.params.id);
     const { image, name, price, category } = req.body;
-    console.log(id, image, name, price, category);
-  
-    const index = clothes.findIndex(cloth => cloth.id === id);
-    if (index !== -1 && image && name && price && category) {
-      clothes[index].image = image;
-      clothes[index].name = name;
-      clothes[index].price = price;
-      clothes[index].category = category;
-      res.json(clothes[index]);
-    } else if (index === -1) {
-      res.status(404).json({ error: "Cloth not found" });
-    } else {
-      res.status(400).json({ error: "Invalid data" });
-    }
+
+    updateProduct(id, { image, name, price, category })
+    .then((data)=>res.json({'data': 'update success'}))
+    .catch(()=>res.json({'error':'db error'}));
+
   });
   
   app.delete('/clothes/:id', (req, res)=>{
     const id = Number(req.params.id);
-    const filteredClothes = clothes.filter(cloth => cloth.id !== id);
-    console.log('len',clothes.length);
-    console.log(filteredClothes.length);
-    
-    if(clothes.length != filteredClothes.length){
-      clothes = filteredClothes;
-      res.status(200).json({message:"삭제 성공"});
-    }else{
-      res.status(400).json({ error: "Cloth not found" });
-    }
+
+    return deleteProduct(id)
+    .then((msg)=> res.status(200).json({message:"삭제 성공"}))
+    .catch(err => res.status(400).json({ error: "Cloth not found" }));
 
   })
 
